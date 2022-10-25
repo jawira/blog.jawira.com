@@ -1,5 +1,4 @@
 title: Jawira blog
 author: Jawira Portugal
 description: Blog about my personal projects.
-theme: jekyll-theme-modernist
-show_downloads: false
+theme: minima
