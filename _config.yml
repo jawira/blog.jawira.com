@@ -1,0 +1,13 @@
+theme: minima
+title: Jawira blog
+author: Jawira Portugal
+description: This is my blog, but it's only a POC!
+basedir: /poc-pages
+baseurl: /poc-pages
+github_username: jawira
+linkedin_username: jawira
+
+minima:
+  social_links:
+    twitter: jawira
+    github:  jawira
