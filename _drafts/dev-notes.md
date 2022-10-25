@@ -31,4 +31,3 @@ Issues:
 Examples:
 
 - <https://github.com/SimonDosda/SimonDosda.github.io>
-- <https://github.com/benbalter/retlab>
