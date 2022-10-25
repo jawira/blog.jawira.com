@@ -1,6 +1,4 @@
-I use the bulit-in version of Jekyll, provided by Github pages.
-
-<https://jawira.github.io/poc-pages/>
+I use the built-in version of Jekyll, provided by Github Pages.
 
 ## Categories
 
