@@ -4,7 +4,7 @@ and [docker-compose](https://docs.docker.com/compose/) environments. Traefik
 will receive all your incoming web requests and redirect them to Docker
 containers.
 
-![Image description](../images/traefik_diagram.png)
+![Image description](/images/traefik_diagram.png)
 
 In order to redirect your requests, Traefik will use a router to identify the
 appropriate web server.
@@ -123,7 +123,7 @@ $ docker compose -p foo up -d
 
 Now, if we open `http://web.foo.localhost` we will see Apache's welcome message:
 
-![Image description](../images/traefik_apache_works_1.png)
+![Image description](/images/traefik_apache_works_1.png)
 
 ## Using a custom rule
 
@@ -146,7 +146,7 @@ new `label`:
 To make changes take effect we have to launch again our project
 using `docker compose -p foo up -d`. This is the result:
 
-![Image description](../images/traefik_apache_works_2.png)
+![Image description](/images/traefik_apache_works_2.png)
 
 As you can see everything works as expected.
 
