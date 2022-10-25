@@ -1,4 +1,4 @@
 title: Jawira blog
 author: Jawira Portugal
 description: Blog about my personal projects.
-remote_theme: pages-themes/modernist
+theme: modernist
