@@ -1,6 +1,27 @@
 title: Jawira blog
-author: Jawira Portugal
 description: Blog about my personal projects.
-theme: jekyll-theme-modernist
-baseurl: ""
-url: "https://blog.jawira.com"
+baseurl: "" # the subpath of your site, e.g. /blog
+
+remote_theme: jekyll/minima
+minima:
+  skin: auto
+  social_links:
+    twitter: jawira
+    github: jawira
+
+plugins:
+  - jekyll-feed
+  - jekyll-remote-theme
+
+exclude:
+  - README.md
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/

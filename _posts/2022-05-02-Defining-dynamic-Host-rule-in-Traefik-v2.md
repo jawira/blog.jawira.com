@@ -1,3 +1,7 @@
+---
+layout: post
+---
+
 [Traefik](https://traefik.io/traefik/) is a reverse http proxy, it works
 specially well with [docker](https://www.docker.com/)
 and [docker-compose](https://docs.docker.com/compose/) environments. Traefik
