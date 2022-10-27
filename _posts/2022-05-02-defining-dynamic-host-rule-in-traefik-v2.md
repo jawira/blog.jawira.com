@@ -1,7 +1,8 @@
 ---
 layout: post
+title: "Defining dynamic Host rule in Traefik V2"
 ---
-
+<!-- {% raw %} -->
 [Traefik](https://traefik.io/traefik/) is a reverse http proxy, it works
 specially well with [docker](https://www.docker.com/)
 and [docker-compose](https://docs.docker.com/compose/) environments. Traefik
@@ -162,3 +163,4 @@ environments.
 
 If you use `.localhost` tld, you won't need to declare your domains
 within `/etc/hosts`.
+<!-- {% endraw %} -->
