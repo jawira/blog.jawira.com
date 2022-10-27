@@ -1,9 +1,13 @@
-[*.md]
+[*]
 insert_final_newline = true
 charset = utf-8
 indent_size = 2
 end_of_line = lf
-max_line_length = 80
-trim_trailing_whitespace = false
 indent_style = space
 ij_visual_guides = 80, 120
+trim_trailing_whitespace = true
+max_line_length = 120
+
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = 80

@@ -15,6 +15,8 @@ plugins:
 
 exclude:
   - README.md
+  - build.xml
+  - build.svg
   - .sass-cache/
   - .jekyll-cache/
   - gemfiles/

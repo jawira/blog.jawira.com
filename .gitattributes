@@ -1,0 +1,5 @@
+*.php	text	eol=lf	diff=php
+*.js	text	eol=lf
+*.svg	text	eol=lf
+*.png	binary
+*.jpg	binary

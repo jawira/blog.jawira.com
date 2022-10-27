@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="blog.jawira.com" description="Jawira blog" default="help">
+
+  <target name="setup" depends="jekyll:clean,jekyll:serve"/>
+
+  <target name="jekyll:clean" description="Run Jekyll server">
+    <mkdir dir="_site"/>
+    <delete dir="_site" failonerror="false"/>
+  </target>
+
+  <target name="jekyll:serve" description="Run Jekyll server">
+    <exec executable="bundle" checkreturn="true" passthru="true">
+      <env key="JEKYLL_ENV" value="development"/>
+      <arg value="exec"/>
+      <arg value="jekyll"/>
+      <arg value="serve"/>
+    </exec>
+  </target>
+
+  <target name="requirements"
+          description="Install Jekyll and dependencies to start developments, might require to use sudo.">
+    <exec executable="apt" passthru="true" checkreturn="true">
+      <arg value="install"/>
+      <arg value="-y"/>
+      <arg value="ruby-dev"/>
+    </exec>
+    <exec executable="gem" passthru="true" checkreturn="true">
+      <arg value="install"/>
+      <arg value="bundler"/>
+      <arg value="jekyll"/>
+    </exec>
+  </target>
+
+  <target name="help">
+    <uptodate property="uptodate.visualizer" srcfile="build.xml" targetfile="build.svg"/>
+    <runtarget target="map"/>
+    <open path="build.svg"/>
+  </target>
+
+  <target name="map" unless="uptodate.visualizer" description="Create buildfile map">
+    <visualizer format="svg"/>
+  </target>
+
+</project>
