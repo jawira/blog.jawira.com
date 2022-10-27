@@ -3,6 +3,42 @@
 
   <target name="setup" depends="jekyll:clean,jekyll:serve"/>
 
+  <adhoc-task name="slugify">
+    <![CDATA[
+        class Slugify extends \Phing\Task {
+            private string $text;
+            private string $propertyName;
+            public function setText(string $text) {
+                $this->text = $text;
+            }
+            public function setPropertyName(string $propertyName){
+                $this->propertyName = $propertyName;
+            }
+            public function main() {
+                $slug = $this->slugify($this->text);
+                $this->log("Slug: $slug");
+                $this->project->setUserProperty($this->propertyName, $slug);
+            }
+            private function slugify(string $text)
+            {
+                // Stolen from: https://stackoverflow.com/a/13331948/4345061
+                $rules = <<<'RULES'
+                    :: Any-Latin;
+                    :: NFD;
+                    :: [:Nonspacing Mark:] Remove;
+                    :: NFC;
+                    :: [^-[:^Punctuation:]] Remove;
+                    :: Lower();
+                    [:^L:] { [-] > ;
+                    [-] } [:^L:] > ;
+                    [-[:Separator:]]+ > '-';
+                RULES;
+                return \Transliterator::createFromRules($rules)->transliterate($text);
+            }
+        }
+      ]]>
+  </adhoc-task>
+
   <target name="jekyll:clean" description="Run Jekyll server">
     <mkdir dir="_site"/>
     <delete dir="_site" failonerror="false"/>
@@ -39,6 +75,33 @@
 
   <target name="map" unless="uptodate.visualizer" description="Create buildfile map">
     <visualizer format="svg"/>
+  </target>
+
+  <target name="jekyll:new:post" description="Create new post in blog">
+    <input propertyName="post.title">Post name:</input>
+    <slugify text="${post.title}" propertyName="post.slug"/>
+    <tstamp>
+      <format property="post.date" pattern="%Y-%m-%d"/>
+    </tstamp>
+    <copy file="_drafts/template.md" tofile="_posts/${post.date}-${post.slug}.md">
+      <filterchain>
+        <replacetokens>
+          <token key="POST_TITLE" value="${post.title}" />
+        </replacetokens>
+      </filterchain>
+    </copy>
+  </target>
+
+  <target name="jekyll:new:draft" description="Create new post in blog">
+    <input propertyName="post.title">Draft name:</input>
+    <slugify text="${post.title}" propertyName="post.slug"/>
+    <copy file="_drafts/template.md" tofile="_drafts/${post.slug}.md">
+      <filterchain>
+        <replacetokens>
+          <token key="POST_TITLE" value="${post.title}" />
+        </replacetokens>
+      </filterchain>
+    </copy>
   </target>
 
 </project>

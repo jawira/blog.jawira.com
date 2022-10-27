@@ -1,6 +1,5 @@
 title: Jawira blog
 description: Blog about my personal projects.
-baseurl: "" # the subpath of your site, e.g. /blog
 
 remote_theme: jekyll/minima
 minima:
