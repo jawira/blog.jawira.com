@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="blog.jawira.com" description="Jawira blog" default="help">
 
-  <target name="setup" depends="jekyll:clean,jekyll:serve"/>
+  <target name="setup" depends="plantuml:puml-to-svg,jekyll:clean,jekyll:serve"/>
 
   <adhoc-task name="slugify">
     <![CDATA[
+
         class Slugify extends \Phing\Task {
             private string $text;
             private string $propertyName;
@@ -36,7 +37,8 @@
                 return \Transliterator::createFromRules($rules)->transliterate($text);
             }
         }
-      ]]>
+
+    ]]>
   </adhoc-task>
 
   <target name="jekyll:clean" description="Run Jekyll server">
@@ -85,7 +87,7 @@
     <copy file="_drafts/template.md" tofile="_posts/${post.date}-${post.slug}.md">
       <filterchain>
         <replacetokens>
-          <token key="POST_TITLE" value="${post.title}" />
+          <token key="POST_TITLE" value="${post.title}"/>
         </replacetokens>
       </filterchain>
     </copy>
@@ -97,10 +99,19 @@
     <copy file="_drafts/template.md" tofile="_drafts/${post.slug}.md">
       <filterchain>
         <replacetokens>
-          <token key="POST_TITLE" value="${post.title}" />
+          <token key="POST_TITLE" value="${post.title}"/>
         </replacetokens>
       </filterchain>
     </copy>
+  </target>
+
+  <target name="plantuml:puml-to-svg" description="Convert PlantUML diagrams from the image dir to SVG">
+    <exec executable="plantuml" passthru="true" checkreturn="true">
+      <arg value="-tsvg"/>
+      <arg value="-progress"/>
+      <arg value="-checkmetadata"/>
+      <arg value="images/*.puml"/>
+    </exec>
   </target>
 
 </project>

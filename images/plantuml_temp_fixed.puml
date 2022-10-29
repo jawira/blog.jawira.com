@@ -1,0 +1,8 @@
+@startuml
+class Article {
+- text
++ getText()
+}
+note "Use \\n and not \\r\\n" as N2
+Article . N2
+@enduml
