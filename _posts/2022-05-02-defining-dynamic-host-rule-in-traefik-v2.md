@@ -2,13 +2,13 @@
 layout: post
 title: "Defining dynamic Host rule in Traefik V2"
 ---
-<!-- {% raw %} -->
 [Traefik](https://traefik.io/traefik/) is a reverse http proxy, it works
 specially well with [docker](https://www.docker.com/)
 and [docker-compose](https://docs.docker.com/compose/) environments. Traefik
 will receive all your incoming web requests and redirect them to Docker
 containers.
 
+<!-- {% raw %} -->
 ![Image description](/images/traefik_diagram.png)
 
 In order to redirect your requests, Traefik will use a router to identify the
@@ -135,8 +135,7 @@ Now, if we open `http://web.foo.localhost` we will see Apache's welcome message:
 We can also specify a custom rule for a service, this custom rule will override
 the default rule.
 
-For example we want to use `my-foo.localhost`, to do so we simple add a
-new `label`:
+For example, we want to use `my-foo.localhost`, to do so we simply add a new `label`:
 
 ```diff
 # ...
