@@ -15,11 +15,11 @@
                 $this->propertyName = $propertyName;
             }
             public function main() {
-                $slug = $this->slugify($this->text);
+                $slug = $this->createSlug($this->text);
                 $this->log("Slug: $slug");
                 $this->project->setUserProperty($this->propertyName, $slug);
             }
-            private function slugify(string $text)
+            private function createSlug(string $text)
             {
                 // Stolen from: https://stackoverflow.com/a/13331948/4345061
                 $rules = <<<'RULES'
@@ -46,7 +46,6 @@
 
   <target name="jekyll:serve" description="Run Jekyll server">
     <exec executable="bundle" checkreturn="true" passthru="true">
-      <env key="JEKYLL_ENV" value="development"/>
       <arg value="exec"/>
       <arg value="jekyll"/>
       <arg value="serve"/>

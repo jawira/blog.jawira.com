@@ -1,7 +1,3 @@
-{% comment %}
-Environment is set in build.xml, use Phing to avoid including tracking code.
-{% endcomment %}
-{% unless jekyll.environment == "development" %}
-<script async defer data-website-id="1dad6272-bdc0-4419-a4fe-7aa67590d9e7"
-        src="https://umami.jawira.com/umami.js"></script>
-{% endunless %}
+<script async defer src="https://umami.jawira.com/umami.js"
+        data-website-id="1dad6272-bdc0-4419-a4fe-7aa67590d9e7"
+        data-domains="blog.jawira.com"></script>
