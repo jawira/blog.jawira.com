@@ -8,6 +8,8 @@ minima:
     twitter: jawira
     github: jawira
 
+
+
 plugins:
   - jekyll-feed
   - jekyll-remote-theme
@@ -26,3 +28,8 @@ exclude:
   - vendor/cache/
   - vendor/gems/
   - vendor/ruby/
+
+# Enabling Giscus comments, not Disqus!
+url: https://blog.jawira.com
+disqus:
+  shortname: dummy
