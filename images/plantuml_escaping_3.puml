@@ -1,0 +1,4 @@
+@startuml
+(setup) <-- (composer)
+(setup) <-- (phpunit)
+@enduml
