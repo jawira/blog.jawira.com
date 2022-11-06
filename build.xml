@@ -78,7 +78,7 @@
     <visualizer format="svg"/>
   </target>
 
-  <target name="jekyll:new:post" description="Create new post in blog">
+  <target name="new:post" description="Create new post in blog">
     <input propertyName="post.title">Post name:</input>
     <slugify text="${post.title}" propertyName="post.slug"/>
     <tstamp>
@@ -93,7 +93,7 @@
     </copy>
   </target>
 
-  <target name="jekyll:new:draft" description="Create new post in blog">
+  <target name="new:draft" description="Create new post in blog">
     <input propertyName="post.title">Draft name:</input>
     <slugify text="${post.title}" propertyName="post.slug"/>
     <copy file="_drafts/template.md" tofile="_drafts/${post.slug}.md">
