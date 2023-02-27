@@ -5,8 +5,8 @@ remote_theme: jekyll/minima
 minima:
   skin: auto
   social_links:
-    twitter: jawira
-    github: jawira
+    - { platform: twitter, user_url: "https://twitter.com/jawira" }
+    - { platform: github,  user_url: "https://github.com/jawira/jawira" }
 
 
 
