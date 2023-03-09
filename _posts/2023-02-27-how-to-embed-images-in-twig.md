@@ -45,12 +45,11 @@ use `127.0.0.1` to load my images, so I had to configure a special _asset
 package_ in `framework.yaml` file.
 
 ```yaml
-# ...
+#config/packages/framework.yaml
 assets:
   packages:
     attachments-pdf:
       base_urls: 'http://127.0.0.1/attachments'
-# ...
 ``` 
 
 To generate an absolute url using `attachments-pdf` package:
@@ -101,6 +100,7 @@ To avoid any problems with paths I decided to use absolute paths, therefore I
 configured this in `framework.yaml`, I used `base_path` instead of `base_urls`.
 
 ```diff
+#config/packages/framework.yaml
 assets:
   packages:
     attachments-pdf:
