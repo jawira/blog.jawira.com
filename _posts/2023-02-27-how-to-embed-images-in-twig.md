@@ -101,8 +101,9 @@ packages are required `twig/html-extra` and `twig/extra-bundle`.
 composer require twig/html-extra twig/extra-bundle
 ```
 
-To avoid any problems with paths I decided to use absolute paths, therefore I
-configured this in `framework.yaml`, I used `base_path` instead of `base_urls`.
+To avoid any problems with paths I decided to use absolute paths, in consequence
+I configured this in `framework.yaml`, I used `base_path` instead
+of `base_urls`.
 
 ```diff
 #config/packages/framework.yaml
@@ -113,7 +114,7 @@ assets:
 +      base_path: '/app/assets/attachments'
 ``` 
 
-Now I need a way to read the image content, this can be easily done in PHP
+Next, I needed a way to read the image content, this can be easily done in PHP
 with `file_get_contents` function, because there is no similar functionality in
 Twig I had to write my own `file_get_contents` Twig filter. You can use _make
 bundle_ to create a Twig extension, our custom filter will be located inside.
@@ -151,8 +152,7 @@ Finally, putting everything together:
 <!-- {% raw %} -->
 
 ```html
-<img
-  src="{{ asset('avatar.png', 'attachments-pdf') | file_get_contents | data_uri }}"/>
+<img src="{{ asset('avatar.png', 'attachments-pdf') | file_get_contents | data_uri }}"/>
 ```
 
 <!-- {% endraw %} -->
