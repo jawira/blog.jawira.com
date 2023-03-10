@@ -7,8 +7,10 @@ Recently I had to create PDF files in a Symfony project using Twig, however this
 is not as easy as it seems, for example you need a special CSS file adapted to
 print.
 
-Another obstacle are images, in this post I explain why using images is a tricky
-task and how I solved this problem.
+Another obstacle is images, I didn't have any problem including images from an
+external source, the problem came when I had to use images from the same
+project. In this post I explain why using images is a tricky task and how I
+solved this problem.
 
 This is the stack I used to generate PDF files:
 
@@ -17,6 +19,9 @@ This is the stack I used to generate PDF files:
   files.
 - [KnpSnappyBundle](https://github.com/KnpLabs/KnpSnappyBundle) - To convert
   Twig view to a PDF file.
+
+I will not explain how to generate PDF files, I assume you already know how to
+use Twig and KnpSnappyBundle.
 
 ## Using `assets` to include an image (didn't work)
 
@@ -109,15 +114,16 @@ assets:
 ``` 
 
 Now I need a way to read the image content, this can be easily done in PHP
-creating a custom Twig filter. You can use _make bundle_ to create a Twig
-extension, our custom filter will be located inside.
+with `file_get_contents` function, because there is no similar functionality in
+Twig I had to write my own `file_get_contents` Twig filter. You can use _make
+bundle_ to create a Twig extension, our custom filter will be located inside.
 
 ```console
 bin/console make:twig-extension FileExtension
 ```
 
-Then we create `file_get_contents` Twig extension, as you can see our Twig
-function will call PHP's `file_get_contents` function.
+Then we create `file_get_contents` Twig filter, as you can see our Twig function
+will call PHP's `file_get_contents` function.
 
 ```php
 <?php // src/Twig/FileExtension.php
@@ -145,7 +151,8 @@ Finally, putting everything together:
 <!-- {% raw %} -->
 
 ```html
-<img src="{{ asset('avatar.png', 'attachments-pdf') | file_get_contents | data_uri }}"/>
+<img
+  src="{{ asset('avatar.png', 'attachments-pdf') | file_get_contents | data_uri }}"/>
 ```
 
 <!-- {% endraw %} -->
@@ -166,11 +173,11 @@ How it works ?
 I explained my journey trying to display images in a PDF file, I tested many
 solutions and I decided to use DATA URIs.
 
-In order to use DATA URIs in my project I had to:
+In order to use DATA URIs I had to:
 
 1. Install `data_uri` Twig filter.
 2. Configure _assets packages_ in `framework.yaml`.
 3. Create `file_get_contents` Twig filter.
 
-I think using DATA URIs is the best solution when you are creating PDF files
-because you will avoid all conflicts with URL.
+I think using DATA URIs is the best solution when you are creating PDF files,
+this will allow you to add images in any environment, dockerized or not.
