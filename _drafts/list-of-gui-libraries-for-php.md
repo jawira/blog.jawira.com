@@ -11,13 +11,13 @@ title: "List of GUI libraries for PHP"
 | PHP-GTK3     | [Homepage](https://github.com/scorninpc/php-gtk3)                                                                 |
 | php-gui      | [Homepage](https://github.com/gabrielrcouto/php-gui) - [Doc](https://gabrielrcouto.github.io/php-gui/dist/#/home) |
 | php-tkui     | [Homepage](https://github.com/skoro/php-tkui)                                                                     |
+| NativePHP    | [Homepage](https://nativephp.com/)                                                                                |
 
 wxPHP
 -----
 
 - https://wxphp.org/
 - Used by https://github.com/jgmdev/phar-gui
-
 
 UI extension
 ------------
