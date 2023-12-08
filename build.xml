@@ -66,6 +66,10 @@
       <arg value="bundler"/>
       <arg value="jekyll"/>
     </exec>
+    <exec executable="bundle" passthru="true" checkreturn="true">
+      <!-- FIXES: Could not find jekyll-4.3.1, jekyll-remote-theme-0.4.3 in locally installed gems -->
+      <arg value="install"/>
+    </exec>
   </target>
 
   <target name="help">
