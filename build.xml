@@ -86,7 +86,7 @@
     <input propertyName="post.title">Post name:</input>
     <slugify text="${post.title}" propertyName="post.slug"/>
     <tstamp>
-      <format property="post.date" pattern="%Y-%m-%d"/>
+      <format property="post.date" pattern="y-MM-dd"/>
     </tstamp>
     <copy file="_drafts/template.md" tofile="_posts/${post.date}-${post.slug}.md">
       <filterchain>
