@@ -5,9 +5,8 @@ title: "Installing Composer with Ansible"
 
 I recently had to install Composer on multiple machines, Ansible was the right
 tool for the job.
-Ansible was the right tool for the job. Ansible is a well-known provisioning
-tool where all configuration is written in simple Yaml files, and the target
-machines don't need any client installed.
+Ansible is a well-known provisioning tool where all configuration is written in
+simple Yaml files, and the target machines don't need any client installed.
 
 In this post I will walk through the Ansible _role_ I created to install
 Composer.
@@ -59,7 +58,8 @@ This is important because it lets you run binaries installed through the
 
 Before using this _role_ as-is, make sure it matches your environment:
 
-1. Check if you really need to execute tasks with elevated privileges (`become: yes`).
+1. Check if you really need to execute tasks with elevated privileges (
+   `become: yes`).
 2. Also check if the Composer's _global bin directory_ is correct. You can use
    this command to retrieve this value:
    `composer global config bin-dir --absolute`.
