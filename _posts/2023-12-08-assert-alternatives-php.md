@@ -1,11 +1,12 @@
 ---
 layout: post
-title:  "Alternatives to assert() function in PHP"
+title: "Alternatives to assert() function in PHP"
 ---
 
 The `assert` function is a very convenient way to validate data in PHP, but is
-this function reliable ? The answer is no. The thing with `assert` function is
-that it can be disabled, so it's usually disabled in production environments.
+this function reliable? The answer is no. The thing with `assert` function is
+that it can be disabled. The `assert()` function is meant to be used only in
+development environments, and it's usually disabled in production environments.
 
 ## How does it work?
 
@@ -18,7 +19,7 @@ $name = false;
 assert(is_string($name)); // will throw AssertError
 ```
 
-If you want to make this example work you must have the following `php.ini`
+If you want to make this example work, you must have the following `php.ini`
 configuration:
 
 ```ini
@@ -31,12 +32,13 @@ to [assert documentation](https://www.php.net/manual/en/function.assert.php).
 
 ## Assert alternatives
 
-Since I cannot use assert function in production, I had to found a replacement.
+Since I cannot use `assert` function in production, I had to found a
+replacement.
 I present you three alternatives I found.
 
-**Alternative 1: use if statement**
+**Alternative 1: use an if statement**
 
-You can mimic assert behaviour using a simple if statement, and negating the
+You can mimic `assert` behavior using a simple `if` statement and negating the
 condition.
 
 ```php
@@ -46,12 +48,12 @@ if (!is_string($name)){
 }
 ```
 
-On one hand this solution is very intuitive, on the other hand it's also
-verbose, now we need three lines of code instead of only one.
+On the one hand, this solution is very intuitive, on the other hand, it's also
+verbose; now we need three lines of code instead of only one.
 
 **Alternative 2: write your own function**
 
-To be closer to the original `assert` function I wrote my own function, of
+To be closer to the original `assert` function I wrote my own function; of
 course it can be used in any environment.
 
 ```php
@@ -61,15 +63,14 @@ $name = false;
 throw_unless(is_string($name), new \Exception('Name must be string'));
 ```
 
-The downside of this solution if that you have to install an external library,
+The downside of this solution is that you have to install an external library,
 in this
-case [jawira/the-lost-functions](https://packagist.org/packages/jawira/the-lost-functions)
-.
+case [jawira/the-lost-functions](https://packagist.org/packages/jawira/the-lost-functions).
 
 **Alternative 3: use ternary operator**
 
-Since PHP 8.1, throw is an expression, I took advantage of this feature to write
-a one-liner `assert` equivalent:
+Since PHP 8.1, `throw` keyword is an expression; I took advantage of this
+feature to write a one-liner `assert` equivalent:
 
 ```php
 $name = false;
@@ -77,11 +78,41 @@ is_string($name) ?: throw new \Exception('Name must be string');
 ```
 
 This is the best alternative. It takes a single line of code, and it only uses
-vanilla PHP - no external library is involved - therefore this is the solution I
-use every day in my projects.
+vanilla PHP – no external library is involved – therefore, this is the solution
+I use every day in my projects.
+
+**Update 2026**
+
+It turns out that using single line ternary operators, as suggested in this
+post, is not compatible with Psalm.
+
+The following two lines of code are not going to be analyzed correctly by Psalm.
+
+```php
+// Using ternary operator
+is_numeric($number) ?: throw new Exception('Must provide a number.');
+// Using null coalescing operator
+$entity ?? throw new Exception('Variable must be defined.');
+```
+
+The previous two lines of code will generate the following error:
+
+```Console
+INFO: MixedOperand - 14:10 - Left operand cannot be mixed
+```
+
+As a solution the ternary operator can be replaced with the `or` operator.
+This will make your code compatible with Psalm and improve human readability as
+well:
+
+```php
+is_numeric($number) or throw new Exception('Must provide a number.');
+```
+
+Source: <https://github.com/vimeo/psalm/issues/10673>
 
 ## Conclusion
 
-Assert function is only meant to be used in dev environment, and it will be very
-likely disabled in production. As a replacement you can use any
-of the alternatives I proposed, being the last one my preferred.
+Assert function is only meant to be used in a dev environment, and it will be
+very likely disabled in production. As a replacement you can use any of the
+alternatives I proposed, being the last one my preferred.
