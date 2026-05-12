@@ -43,17 +43,49 @@ For more details, visit the [EditorConfig homepage](https://editorconfig.org/).
 
 ## Configure .gitattributes
 
-Git can also enforce correct line endings using the `.gitattributes` file. Add
-the following lines:
+Git can also enforce correct line endings using the `.gitattributes` file.
+
+In the following example we specify the line ending for PHP and XML files:
 
 ```gitignore
 # .gitattributes
-*.php   eol=lf
-*.xml   eol=lf
+*.php text eol=lf
+*.xml text eol=lf
 ```
 
-Now, every time a developer pushes or pulls code, Git will automatically apply
-the correct line endings.
+You can also define the line ending for all text files with a single line:
+
+```gitignore
+# .gitattributes
+* text=auto eol=lf
+```
+
+Here a full example:
+
+```console
+# .gitattributes
+
+# Linux
+* text=auto eol=lf
+
+# Windows
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+
+# Binary
+*.phar  binary
+*.png   binary
+```
+
+Once you have crated the `.gitattributes` files you have to execute the
+following command once to update the line endings of all existing files:
+
+```console
+git add --renormalize .
+```
+
+From now on, every time a developer pushes or pulls code, Git will automatically
+apply the correct line endings.
 
 The `.gitattributes` file can configure many other settings beyond line endings.
 For more information, check
