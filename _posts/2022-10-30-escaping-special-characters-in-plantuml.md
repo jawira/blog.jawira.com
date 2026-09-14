@@ -2,16 +2,17 @@
 layout: post
 title: "Escaping special characters in PlantUML"
 ---
-I am a regular user of PlantUML, as such, sometimes I am confronted to escape
-special character in my diagrams, in this post I show you how to do it.
 
-## Escaping newline
+I am a regular PlantUML user. Sometimes, I need to escape special characters in
+my diagrams. In this post, I'll show you how to do it.
 
-Escaping a newline `\n` in PlantUML is easy, you have to write a second
-backslash `\\n`. This also works for `\r` character.
+## Escaping newlines
 
-Let's see an example, in the following PlantUML diagram I want to
-write `Use \n and not \r\n.` but the result is not the expected one:
+Escaping a newline `\n` in PlantUML is easy; you simply write a second backslash
+`\\n`. This also works for the `\r` character.
+
+Let's see an example. In the following PlantUML diagram, I want to write
+`Use \n and not \r\n.` but the result is not what we expect:
 
 ```plantuml
 @startuml
@@ -24,11 +25,11 @@ Article . N2
 @enduml
 ```
 
-![Article class](/images/plantuml_escaping_1.svg)
+![Article class with unescaped newlines - incorrect rendering](/images/plantuml_escaping_1.svg)
 
-To fix this we escape backslash character using a second backslash for `\n` and
-for `\r` as well, therefore this is the string we have to
-use `Use \\n and not \\r\\n.`. This is the final result:
+To fix this, we escape the backslash character using a second backslash for both
+`\n` and `\r`. Thus, use the string `Use \\n and not \\r\\n.` This is the final
+result:
 
 ```plantuml
 @startuml
@@ -41,14 +42,14 @@ Article . N2
 @enduml
 ```
 
-![Fixed Article class](/images/plantuml_escaping_2.svg)
+![Article class with properly escaped newlines - correct rendering](/images/plantuml_escaping_2.svg)
 
 ## Escaping other characters
 
-The real problem comes with another characters, depending on the type a diagram,
-a character might Let see an example, in the following diagram we want to
-replace `composer` by `composer (dev)`, we can't simply add the aditional text
-since parentheses are used to crate the oval shape simply adding `(dev)` will
+The real problem arises with other characters, depending on the diagram type.
+Let's see an example. In the following diagram, we want to replace `composer`
+with `composer (dev)`. We cannot simply add the additional text, since
+parentheses are used to create the oval shape. Simply adding `(dev)` will
 generate a syntax error.
 
 ```plantuml
@@ -58,16 +59,16 @@ generate a syntax error.
 @enduml
 ```
 
-![escaping parentheses](/images/plantuml_escaping_3.svg)
+![Diagram with unescaped parentheses - syntax error](/images/plantuml_escaping_3.svg)
 
-The solution is to use **Unicode codepoints**, with codepoints you can write any
-character without creating a syntax error. In our example we must use the
+The solution is to use **Unicode codepoints**. Using codepoints, you can write
+any character without creating a syntax error. In our example, we must use the
 following codepoints:
 
 1. `(` can be written as `<U+0028>`
-2. and `)` can be written as `<U+0029>`
+2. `)` can be written as `<U+0029>`
 
-So our final code is:
+Here is our final code:
 
 ```plantuml
 @startuml
@@ -76,26 +77,26 @@ So our final code is:
 @enduml
 ```
 
-![escaping parentheses](/images/plantuml_escaping_4.svg)
+![Diagram with properly escaped parentheses using Unicode codepoints - correct rendering](/images/plantuml_escaping_4.svg)
 
 ## Getting a character's codepoint
 
-When you need to get the endpoint of certain character, you can search in
-internet, for example you can use <https://codepoints.net/>.
+When you need to get the codepoint for a character, you can search the internet.
+For example, you can use [codepoints.net](https://codepoints.net/).
 
-If you want to get the codepoint using PHP, then you can use the following code
-snippet:
+As an alternative, you can also get the codepoint using PHP, you can use the
+following code snippet:
 
 ```php
 // codepoint.php
 $character = 'Ñ';
 $codepoint = str_pad(dechex(IntlChar::ord($character)), 4, '0', STR_PAD_LEFT);
-echo "<U+$codepoint>", PHP_EOL; // <U+00d1>
+echo "<U+$codepoint>", PHP_EOL; // <U+00D1>
 ```
 
 ## Conclusion
 
-When confronted with a syntax error, first try to escape that character
-with `\` because, besides `\r` and `\n`, other character can also can
-[be escaped with backslash](https://github.com/plantuml/plantuml/issues/125).
-If backslash doesn't work then you must use unicode codepoints.
+When confronted with a syntax error, first try to escape the character with `\`.
+Besides `\r` and
+`\n`, [other characters can also be escaped with a backslash](https://github.com/plantuml/plantuml/issues/125).
+If the backslash doesn't work, then you must use Unicode codepoints.

@@ -3,30 +3,30 @@ layout: post
 title: "How to embed images in Twig"
 ---
 
-Recently I had to create PDF files in a Symfony project using Twig, however this
-is not as easy as it seems, for example you need a special CSS file adapted to
-print.
+Recently, I had to create PDF files in a Symfony project using Twig. However,
+this is not as easy as it seems; for example, you need a special CSS file
+adapted for printing.
 
-Another obstacle is images, I didn't have any problem including images from an
-external source, the problem came when I had to use images from the same
-project. In this post I explain why using images is a tricky task and how I
-solved this problem.
+Another obstacle is images. I didn't have any problem including images from an
+external source, but the problem arose when I had to use images from the same
+project. In this post, I explain why using images is a tricky task and how I
+solved it.
 
-This is the stack I used to generate PDF files:
+I used the following stack to generate PDF files:
 
 - [Symfony 6](https://symfony.com/) - Web framework.
 - [Twig 3](https://twig.symfony.com/doc/3.x/) - To generate the content of PDF
   files.
 - [KnpSnappyBundle](https://github.com/KnpLabs/KnpSnappyBundle) - To convert
-  Twig view to a PDF file.
+  Twig views to PDF files.
 
-I will not explain how to generate PDF files, I assume you already know how to
-use Twig and KnpSnappyBundle.
+This article does not explain how to generate PDF files. I assume you already
+know how to use Twig and KnpSnappyBundle.
 
-## Using `assets` to include an image (didn't work)
+## Using `assets` to include an image (it didn't work)
 
-The naive solution is treat a PDF file as any other Twig view, simply
-use `assets` function to include an image.
+The naive solution is to treat a PDF file as any other Twig view and simply use
+the `asset` function to include an image.
 
 <!-- {% raw %} -->
 
@@ -36,28 +36,28 @@ use `assets` function to include an image.
 
 <!-- {% endraw %} -->
 
-This didn't work because I was in a Dockerized environment, outside the
-container the project's url was something
-like `http://web.project.localhost`, but within the Docker container this URL
-does not exist and means nothing, therefore the image was never found.
+This didn't work because I was in a Dockerized environment. Outside the
+container, the project's URL was something like `http://web.project.localhost`.
+However, within the Docker container, this URL does not exist and therefore
+means nothing. Thus, the image was never found.
 
 ## Using special asset configuration (it didn't work either)
 
-As told before, the url `http://web.project.localhost` is not resolved when
-requested inside the container, so what kind of URL is always valid inside a
-container ? The answer is a loopback address, that's how I had the idea to
-use `127.0.0.1` to load my images, so I had to configure a special _asset
-package_ in `framework.yaml` file.
+As mentioned before, the URL `http://web.project.localhost` is not resolved when
+requested inside the container. So what kind of URL is always valid inside a
+container? The answer is a loopback address, which led me to use `127.0.0.1` to
+load my images. Therefore, I configured a special _asset package_ in
+`framework.yaml`:
 
 ```yaml
-#config/packages/framework.yaml
+# config/packages/framework.yaml
 assets:
   packages:
     attachments-pdf:
       base_urls: 'http://127.0.0.1/attachments'
-``` 
+```
 
-To generate an absolute url using `attachments-pdf` package:
+To generate an absolute URL using the `attachments-pdf` package:
 
 <!-- {% raw %} -->
 
@@ -67,22 +67,22 @@ To generate an absolute url using `attachments-pdf` package:
 
 <!-- {% endraw %} -->
 
-This would have worked except that, in order to view an image, I needed to be
-<u>logged in</u> to the website, image was never displayed because instead of
-an image I was receiving the login page.
+This would have worked except that I needed to be **logged in** to the website.
+The image was never displayed because, instead of an image, I received the login
+page.
 
 ## Embedding images in Twig
 
-So finally I came up to the idea to embed images directly inside PDF file, I
-wasn't so keen about this solution because it's not a _drop-in solution_, it
+Finally, I considered embedding images directly inside a PDF file. I wasn't very
+enthusiastic about this solution because it's not a _drop-in solution_; it
 requires some configuration to work properly.
 
-To embed an image within any HTML file you can use **DATA URIs** instead of an
-image url, this is the syntax that DATA URI follows:
+To embed an image within any HTML file, you can use **DATA URIs** instead of an
+image URL. DATA URIs follow this syntax:
 
 > `data:<mimetype>;<encoding>,<data>`
 
-Here an example taken
+Here is an example taken
 from [Wikipedia](https://en.wikipedia.org/wiki/Data_URI_scheme#HTML):
 
 ```HTML
@@ -92,39 +92,39 @@ ANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4
 5ErkJggg==" alt="Red dot"/>
 ```
 
-Luckily for me, somebody already created a
-the [`data_uri`](https://twig.symfony.com/doc/3.x/filters/data_uri.html) filter
-to create DATA URIs, this filter is not installed by default, so the following
-packages are required `twig/html-extra` and `twig/extra-bundle`.
+Luckily for me, somebody already created the [
+`data_uri`](https://twig.symfony.com/doc/3.x/filters/data_uri.html) filter to
+create DATA URIs. This filter is not installed by default. The following
+packages are required: `twig/html-extra` and `twig/extra-bundle`.
 
 ```console
 composer require twig/html-extra twig/extra-bundle
 ```
 
-To avoid any problems with paths I decided to use absolute paths, in consequence
-I configured this in `framework.yaml`, I used `base_path` instead
-of `base_urls`.
+To avoid any problems with paths, I decided to use absolute paths. Therefore, I
+configured this in `framework.yaml`. I used `base_path` instead of `base_urls`:
 
 ```diff
-#config/packages/framework.yaml
+# config/packages/framework.yaml
 assets:
   packages:
     attachments-pdf:
 -      base_urls: 'http://127.0.0.1/attachments'
 +      base_path: '/app/assets/attachments'
-``` 
+```
 
-Next, I needed a way to read the image content, this can be easily done in PHP
-with `file_get_contents` function, because there is no similar functionality in
-Twig I had to write my own `file_get_contents` Twig filter. You can use _make
-bundle_ to create a Twig extension, our custom filter will be located inside.
+Next, I needed a way to read the image content. This can be easily done in PHP
+with `file_get_contents`. However, since Twig has no similar functionality, I
+had to write my own `file_get_contents` Twig filter. You can use
+`make:twig-extension` to create a Twig extension, which will contain our custom
+filter.
 
 ```console
 bin/console make:twig-extension FileExtension
 ```
 
-Then we create `file_get_contents` Twig filter, as you can see our Twig function
-will call PHP's `file_get_contents` function.
+Then, we create the `file_get_contents` Twig filter. As you can see, our Twig
+function calls PHP's `file_get_contents` function.
 
 ```php
 <?php // src/Twig/FileExtension.php
@@ -152,32 +152,33 @@ Finally, putting everything together:
 <!-- {% raw %} -->
 
 ```html
-<img src="{{ asset('avatar.png', 'attachments-pdf') | file_get_contents | data_uri }}"/>
+<img
+  src="{{ asset('avatar.png', 'attachments-pdf') | file_get_contents | data_uri }}"/>
 ```
 
 <!-- {% endraw %} -->
 
-How it works ?
+How does it work?
 
-1. First `asset('avatar.png', 'attachments-pdf')` will generate an absolute
-   path, in our example this will be `/app/assets/attachments/avatar.png`.
-   Remember we configured this in `framework.yaml`.
-2. Then `file_get_contents` filter will receive the file path and return the
+1. The `asset('avatar.png', 'attachments-pdf')` function generates an absolute
+   path. In our example, this will be `/app/assets/attachments/avatar.png`.
+   Remember, we configured this in `framework.yaml`.
+2. The `file_get_contents` filter then receives the file path and returns the
    content of `avatar.png`.
-3. Finally, we pass the image content to `data_uri` filter, this filter is very
-   handy because it will do all the hard work for us: generate a valid DATA URI
-   syntax, detect the mime type and convert the image to base 64.
+3. Finally, we pass the image content to the `data_uri` filter. This filter is
+   very handy because it does all the hard work for us: generates valid DATA URI
+   syntax, detects the MIME type, and converts the image to base64.
 
 ## Conclusion
 
-I explained my journey trying to display images in a PDF file, I tested many
-solutions and I decided to use DATA URIs.
+I explained my journey trying to display images in a PDF file. I tested many
+solutions and decided to use DATA URIs.
 
-In order to use DATA URIs I had to:
+To use DATA URIs, I had to:
 
-1. Install `data_uri` Twig filter.
+1. Install the `data_uri` Twig filter.
 2. Configure _assets packages_ in `framework.yaml`.
-3. Create `file_get_contents` Twig filter.
+3. Create a `file_get_contents` Twig filter.
 
-I think using DATA URIs is the best solution when you are creating PDF files,
-this will allow you to add images in any environment, dockerized or not.
+I think using DATA URIs is the best solution when you are creating PDF files.
+This allows you to add images in any environment, dockerized or not.

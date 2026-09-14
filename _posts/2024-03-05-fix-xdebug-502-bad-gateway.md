@@ -4,19 +4,18 @@ title: "Fix '502 Bad Gateway' with Xdebug 3"
 ---
 
 If you've encountered issues with Xdebug while working on a Symfony project
-( particularly when PHPStorm is listening for Xdebug), you might have come
-across a "502 Bad Gateway" error from Nginx server. In this post, I'll share how
-I resolved this problem.
+(particularly when PhpStorm is listening for Xdebug), you might have come across
+a "502 Bad Gateway" error from the Nginx server. In this post, I'll share how I
+resolved this problem.
 
 ## My environment
 
-I'm currently working on a Symfony 6.1 application within a dockerized
-environment:
+I'm currently working on a Symfony 6.1 application in a Dockerized environment:
 
-* nginx 1.19
-* php 8.1 fpm
+- Nginx 1.19
+- PHP 8.1 FPM
 
-Upon attempting to listen for Xdebug in PHPStorm, I encountered the following
+Upon attempting to listen for Xdebug in PhpStorm, I encountered the following
 error in the FPM container:
 
 ```
@@ -25,24 +24,24 @@ error in the FPM container:
 
 Simultaneously, the browser displayed the following error:
 
-![ngnix error](/images/nginx-502-bad-gateway.png)
+![Nginx 502 Bad Gateway error](/images/nginx-502-bad-gateway.png)
 
 ## The solution
 
 After several hours of investigation, I pinpointed the root cause of the issue
-and discovered a solution. It turns out that there's a bug within Xdebug 3.3.*,
-which has been documented in various tickets:
+and discovered a solution. It turns out there is a bug in Xdebug 3.3.*,
+documented in various tickets:
 
-* [Issue #2229](https://bugs.xdebug.org/view.php?id=2229)
-* [Issue #2235](https://bugs.xdebug.org/view.php?id=2235)
-* [Issue #2244](https://bugs.xdebug.org/view.php?id=2244)
+- [Issue #2229](https://bugs.xdebug.org/view.php?id=2229)
+- [Issue #2235](https://bugs.xdebug.org/view.php?id=2235)
+- [Issue #2244](https://bugs.xdebug.org/view.php?id=2244)
 
-Given that I'm working in a dockerized environment, I needed to downgrade Xdebug
+Since I'm working in a Dockerized environment, I needed to downgrade Xdebug
 within the Docker container, not on the host system.
 
-Here's what my Dockerfile looked like after the downgrade:
+Here is my Dockerfile after the downgrade:
 
-```Dockerfile
+```dockerfile
 # ...
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/install-php-extensions
@@ -57,11 +56,10 @@ RUN install-php-extensions \
 # ...
 ```
 
-Note how you specify the Xdebug version to use to `3.2.2`.
-Remember, you'll need to rebuild and restart your container for the changes to
-be applied.
+Note that you need to specify the Xdebug version as `3.2.2`. Remember, you need
+to rebuild and restart your container for the changes to take effect.
 
 ## Conclusion
 
-The root cause of the problem lies in a bug within Xdebug 3.3.*. Downgrading to
-Xdebug 3.2.2 effectively resolved the issue.
+The root cause of the problem is a bug in Xdebug 3.3.*. Downgrading to Xdebug
+3.2.2 successfully resolved the issue.

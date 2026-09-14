@@ -1,28 +1,28 @@
 ---
 layout: post
-title:  "Profiling a PHP script with XDebug"
+title: "Profiling a PHP script with Xdebug"
 ---
 
-Software profiling is a powerful technique when you want to optimize your code.
-Among other things, a profile snapshot will show you which parts of your
-software are the slower.
+Software profiling is a powerful technique for optimizing your code. Among other
+things, a profile snapshot will show you which parts of your software are the
+slowest.
 
-In this article I will explain how to create a profile snapshot for a PHP
+In this article, I will explain how to create a profile snapshot for a PHP
 script.
 
 ## Requirements
 
-I assume you are using _Ubuntu_ and you already have PHP installed. Please also
-install _XDebug 3_ and _KCachegrind_:
+I assume you are using _Ubuntu_ and have PHP already installed. Also install
+_Xdebug 3_ and _KCachegrind_:
 
 ```console
 $ apt install php-xdebug
 $ apt install kcachegrind
 ```
 
-## Create profile file
+## Creating a profile file
 
-As an example, I will profile tests
+As an example, let's profile tests
 from [jawira/plantuml-encoding](https://github.com/jawira/plantuml-encoding).
 
 ```console
@@ -31,47 +31,47 @@ $ cd plantuml-encoding
 $ php tests/vanilla.php
 ```
 
-Execute the following command to profile `tests/vanilla.php`:
+To profile `tests/vanilla.php`, execute the following command:
 
 ```console
-$  php -dxdebug.mode=profile -dxdebug.output_dir=. tests/vanilla.php
+$ php -dxdebug.mode=profile -dxdebug.output_dir=. tests/vanilla.php
 ```
 
-After the execution is finished, a new profile snapshot will be created. This
-profile file has the following name pattern `cachegrind.out.xxxxx`
-(where `xxxxx` is a number).
+After execution, a profile snapshot is created with the naming pattern
+`cachegrind.out.xxxxx` (where `xxxxx` is a number).
 
-![terminal screenshot](/images/profiling_xdebug_terminal.png)
+![Terminal screenshot showing profile file creation](/images/profiling_xdebug_terminal.png)
 
-_XDebug_ can be configured in `php.ini`. Here we have configured _XDebug_
-_on-the-fly_ passing `php.ini` configuration through the terminal.
+_Xdebug_ can be configured in `php.ini`. Here, we configured it on-the-fly by
+passing `php.ini` settings through the terminal.
 
-* **-dxdebug.mode=profile**: This option makes `profile mode` enabled for this
+* **`-dxdebug.mode=profile`**: This option enables profile mode for this
   command.
-* **-dxdebug.output_dir=.**: Save profile snapshots in current dir "`.`",
-  otherwise snapshots are saved in `/tmp`.
+* **`-dxdebug.output_dir=.`**: Saves profile snapshots in the current directory
+  (`.`); otherwise, they are saved in `/tmp`.
 
-In our case `profiling mode` is ephemeral, but it can be a problem if you are
-activating profiling by other means (for example directly editing `php.ini`
-file). Profile snapshots can take a LOT of disk space, never leave profile mode
-permanently enabled.
+In our case, profiling mode is ephemeral. However, this can become problematic
+if you activate profiling by other means, such as directly editing the `php.ini`
+file. Profile snapshots can consume a lot of disk space, so never leave profile
+mode permanently enabled.
 
-## Opening profile file
+## Opening the profile file
 
-To visualize your profile snapshot, simply open the snapshot (in our
-case `cachegrind.out.14476`) with _KCachegrind_.
+To visualize the profile snapshot, simply open it (in our case
+`cachegrind.out.14476`) with _KCachegrind_.
 
-![KCachegrind screenshot](/images/profiling_xdebug_kcachegrind.png)
+![KCachegrind screenshot showing profile analysis](/images/profiling_xdebug_kcachegrind.png)
 
-The reading and interpretation of profiling files are beyond the scope of this
-article, yet I recommend you to see this
-video <https://www.youtube.com/watch?v=h-0HpCblt3A> presenting KCachegrind.
+Reading and interpreting profiling files is beyond the scope of this article.
+However, I recommend
+watching [this video](https://www.youtube.com/watch?v=h-0HpCblt3A) presenting
+KCachegrind.
 
 ## Conclusion
 
-Creating a profile snapshot is easy if you understand how to configure _XDebug_
-properly. Using `-d` options is very convenient technique to enable profiling
-from the terminal.
+Creating a profile snapshot is easy once you know how to configure _Xdebug_
+properly. Using `-d` options is a very convenient technique for enabling
+profiling from the terminal.
 
 ## Resources
 

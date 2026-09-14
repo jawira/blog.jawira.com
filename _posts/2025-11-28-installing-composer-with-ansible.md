@@ -1,18 +1,18 @@
 ---
 layout: post
-title: "Installing Composer with Ansible"
+title: "Install Composer with Ansible"
 ---
 
-I recently had to install Composer on multiple machines, Ansible was the right
-tool for the job.
-Ansible is a well-known provisioning tool where all configuration is written in
-simple Yaml files, and the target machines don't need any client installed.
+I recently had to install Composer on multiple machines. Ansible proved to be
+the right tool for the job.
 
-In this post I will walk through the Ansible _role_ I created to install
+Ansible is a well-known provisioning tool where all configuration is written in
+simple YAML files. The target machines require no client installation.
+
+In this post, I will walk through the Ansible role I created to install
 Composer.
 
-Here's the structure of the _role_.
-Without surprise, I called this _role_ `composer`.
+Here is the structure of the role. I named this role `composer`:
 
 ```text
 roles/
@@ -21,8 +21,8 @@ roles/
         └── main.yml
 ```
 
-As you can see, this _role_ is extremely simple.
-It contains a single _task list_ in `./roles/composer/tasks/main.yml`:
+As you can see, this role is very simple and contains a single task file in
+`./roles/composer/tasks/main.yml`:
 
 ```yaml
 ---
@@ -45,21 +45,20 @@ It contains a single _task list_ in `./roles/composer/tasks/main.yml`:
     line: 'export PATH="{{ ansible_env.HOME }}/.config/composer/vendor/bin:$PATH"'
 ```
 
-The first _task_ downloads the _Phar_ version of Composer.
-If Composer is already installed, Ansible won't re-download it.
+The first task downloads the Phar version of Composer. If Composer is already
+installed, Ansible will not re-download it.
 
-Notice that version of Composer is hardcoded, this is not a big concern because
-in the second _task_ we update Composer anyway.
+Note that the version of Composer is hardcoded. However, this is not a concern
+because the second task updates Composer anyway.
 
-Finally, the last _task_ adds the Composer's _global bin directory_ into the
-PATH.
-This is important because it lets you run binaries installed through the
+Finally, the last task adds Composer's global `bin` directory to the PATH. This is
+important because it allows you to run binaries installed through the
 `composer global require` command.
 
-Before using this _role_ as-is, make sure it matches your environment:
+Before using this role, make sure it matches your environment:
 
-1. Check if you really need to execute tasks with elevated privileges (
-   `become: yes`).
-2. Also check if the Composer's _global bin directory_ is correct. You can use
-   this command to retrieve this value:
+1. Check if you really need to execute tasks with elevated privileges
+   (`become: yes`).
+2. Verify that Composer's global `bin` directory is correct. You can use this
+   command to retrieve this value:
    `composer global config bin-dir --absolute`.

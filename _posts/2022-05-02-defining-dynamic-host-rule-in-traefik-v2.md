@@ -1,41 +1,39 @@
 ---
 layout: post
-title: "Defining dynamic Host rule in Traefik V2"
+title: "Defining dynamic host rules in Traefik v2"
 ---
-[Traefik](https://traefik.io/traefik/) is a reverse http proxy, it works
-specially well with [docker](https://www.docker.com/)
-and [docker-compose](https://docs.docker.com/compose/) environments. Traefik
-will receive all your incoming web requests and redirect them to Docker
-containers.
+
+[Traefik](https://traefik.io/traefik/) is a reverse HTTP proxy. It works
+especially well with [Docker](https://www.docker.com/)
+and [Docker Compose](https://docs.docker.com/compose/) environments. Traefik
+receives all incoming web requests and redirects them to Docker containers.
 
 <!-- {% raw %} -->
-![Image description](/images/traefik_diagram.png)
+![Traefik diagram](/images/traefik_diagram.png)
 
-In order to redirect your requests, Traefik will use a router to identify the
-appropriate web server.
+To redirect requests, Traefik uses a router to identify the appropriate web
+server.
 
-In this article I show you how I configured a default "Host rule" for my
-development environment. This rule will automatically add a rule for any
-service.
+In this article, I'll show you how to configure a default host rule for a
+development environment. This rule will automatically apply to any service:
 
 - **`http://<service>.<project>.localhost`**
 
-I assume you already have some experience with Docker and Traefik.
+This article assumes you have some experience with Docker and Traefik.
 
 ## Traefik configuration
 
-First install Traefik. Let's create a new project with the following structure:
+First, install Traefik. Let's create a new project with the following structure:
 
 ```
 traefik/
-└── docker-compose.yaml
+└── compose.yaml
 ```
 
-You only need one single file to start using Traefik. This is the content
-of `traefik/docker-compose.yaml`:
+You only need one file to start using Traefik. Here is the content of
+`traefik/compose.yaml`:
 
 ```yaml
-version: '3.7'
 services:
 
   traefik:
@@ -61,26 +59,26 @@ networks:
   default:
 ```
 
-This is the most important command option when creating dynamic rules:
+The most important command option for creating dynamic rules is:
 
 ```yaml
 - '--providers.docker.defaultRule=Host(`{{ index .Labels "com.docker.compose.service" }}.{{ index .Labels "com.docker.compose.project" }}.localhost`)'
 ```
 
-Let's see what the previous line does:
+Here's what this command does:
 
-- **--providers.docker.defaultRule**: this is the rule to be used if container
-  doesn't define one.
-- **Host()**: the requested domain will be used for routing.
-- **`{{ index .Labels "com.docker.compose.service" }}`**: this represents the
-  service name, the one you define in `docker-compose.yaml`.
-- **`{{ index .Labels "com.docker.compose.project" }}`**: this placeholder will
-  be replaced with project name. By default, the project name is the directory
-  name, you can also specify this value with `-p <project>` option.
-- Finally **`.localhost`**
-  is [a reserved domain](https://datatracker.ietf.org/doc/html/rfc2606), it will
+- **`--providers.docker.defaultRule`**: This is the rule Traefik uses if the
+  container doesn't define one.
+- **`Host()`**: Traefik uses the requested domain for routing.
+- **`{{ index .Labels "com.docker.compose.service" }}`**: This represents the
+  service name that you define in `compose.yaml`.
+- **`{{ index .Labels "com.docker.compose.project" }}`**: This placeholder is
+  replaced with the project name. By default, the project name is the directory
+  name. You can also specify this value using the `-p <project>` option.
+- Finally, **`.localhost`**
+  is [a reserved domain](https://datatracker.ietf.org/doc/html/rfc2606). It will
   always point to the loopback address **`127.0.0.1`**. Using `.localhost`, you
-  will not need to add your development domains to `/etc/hosts`.
+  do not need to add your development domains to `/etc/hosts`.
 
 Start Traefik with the following command:
 
@@ -88,22 +86,21 @@ Start Traefik with the following command:
 $ docker compose -p traefik up -d
 ```
 
-Traefik is up and running now.
+Traefik is now up and running.
 
 ## Creating a sample project
 
-We will create a demo project to check if our dynamic rules work properly. This
-is the structure of `foo` project:
+Let's create a demo project to verify our dynamic rules work correctly. This is
+the structure of the `foo` project:
 
 ```
 foo/
-└── docker-compose.yaml
+└── compose.yaml
 ```
 
-We define an Apache server within `foo/docker-compose.yaml`:
+Let's define an Apache server in `foo/compose.yaml`:
 
 ```yaml
-version: "3.7"
 services:
 
   web:
@@ -120,22 +117,23 @@ networks:
     external: true
 ```
 
-Let's execute our demo project:
+Let's run our demo project:
 
 ```console
 $ docker compose -p foo up -d
 ```
 
-Now, if we open `http://web.foo.localhost` we will see Apache's welcome message:
+Now, if we open `http://web.foo.localhost`, we will see Apache's welcome
+message:
 
-![Image description](/images/traefik_apache_works_1.png)
+![Traefik Apache default rule works](/images/traefik_apache_works_1.png)
 
 ## Using a custom rule
 
-We can also specify a custom rule for a service, this custom rule will override
-the default rule.
+We can also specify a custom rule for a service, which will override the default
+rule.
 
-For example, we want to use `my-foo.localhost`, to do so we simply add a new `label`:
+For example, to use `my-foo.localhost`, we simply add a new label:
 
 ```diff
 # ...
@@ -147,19 +145,18 @@ For example, we want to use `my-foo.localhost`, to do so we simply add a new `la
 # ...
 ```
 
-To make changes take effect we have to launch again our project
-using `docker compose -p foo up -d`. This is the result:
+To apply the changes, we need to restart the project using
+`docker compose -p foo up -d`. Here is the result:
 
-![Image description](/images/traefik_apache_works_2.png)
+![Traefik Apache custom rule works](/images/traefik_apache_works_2.png)
 
-As you can see everything works as expected.
+As you can see, everything works as expected.
 
 ## Conclusion
 
 Traefik is a highly configurable reverse proxy. You only need one line of code
-to have dynamic domains, these domains are well suited for development
-environments.
+to create dynamic domains, which are well suited for development environments.
 
-If you use `.localhost` tld, you won't need to declare your domains
-within `/etc/hosts`.
+If you use the `.localhost` TLD, you won't need to declare your domains in
+`/etc/hosts`.
 <!-- {% endraw %} -->

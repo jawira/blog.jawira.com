@@ -1,60 +1,58 @@
 ---
 layout: post
-title: "Alternatives to assert() function in PHP"
+title: "Alternatives to the assert() function in PHP"
 ---
 
-The `assert` function is a very convenient way to validate data in PHP, but is
-this function reliable? The answer is no. The thing with `assert` function is
-that it can be disabled. The `assert()` function is meant to be used only in
-development environments, and it's usually disabled in production environments.
+The `assert` function is a very convenient way to validate data in PHP. But is
+this function reliable? The answer is no. The issue with the `assert` function
+is that it can be disabled. It is meant only for development environments and is
+usually disabled in production environments.
 
 ## How does it work?
 
-`Assert` function allows you to evaluate an _expression_, if the
-condition is _true_ then the execution will continue normally, but if the
-condition is _false_ then an `AssertionError` will be thrown.
+The `assert` function allows you to evaluate an _expression_. If the condition
+is _true_, execution continues normally. But if the condition is _false_, an
+`AssertionError` is thrown.
 
 ```php
 $name = false;
-assert(is_string($name)); // will throw AssertError
+assert(is_string($name)); // will throw AssertionError
 ```
 
-If you want to make this example work, you must have the following `php.ini`
-configuration:
+To make this example work, you need the following `php.ini` configuration:
 
 ```ini
 zend.assertions = 1
 assert.active = 1
 ```
 
-For more details please refer
-to [assert documentation](https://www.php.net/manual/en/function.assert.php).
+For more details, see
+the [assert documentation](https://www.php.net/manual/en/function.assert.php).
 
 ## Assert alternatives
 
-Since I cannot use `assert` function in production, I had to found a
-replacement.
-I present you three alternatives I found.
+Since I cannot use the `assert` function in production, I had to find a
+replacement. Here are three alternatives I found:
 
-**Alternative 1: use an if statement**
+**Alternative 1: Use an If Statement**
 
-You can mimic `assert` behavior using a simple `if` statement and negating the
-condition.
+You can mimic the `assert` behavior using a simple `if` statement and negating
+the condition.
 
 ```php
 $name = false;
-if (!is_string($name)){
-    throw new \Exception('Name must be string')
+if (!is_string($name)) {
+    throw new \Exception('Name must be string');
 }
 ```
 
-On the one hand, this solution is very intuitive, on the other hand, it's also
-verbose; now we need three lines of code instead of only one.
+On the one hand, this solution is very intuitive. On the other hand, it is also
+verbose: we now need three lines of code instead of only one.
 
-**Alternative 2: write your own function**
+**Alternative 2: Write Your Own Function**
 
-To be closer to the original `assert` function I wrote my own function; of
-course it can be used in any environment.
+To be closer to the original `assert` function, I wrote my own function; of
+course, it can be used in any environment.
 
 ```php
 use function Jawira\TheLostFunctions\throw_unless;
@@ -63,30 +61,30 @@ $name = false;
 throw_unless(is_string($name), new \Exception('Name must be string'));
 ```
 
-The downside of this solution is that you have to install an external library,
+The downside of this solution is that you have to install an external library:
 in this
-case [jawira/the-lost-functions](https://packagist.org/packages/jawira/the-lost-functions).
+case, [jawira/the-lost-functions](https://packagist.org/packages/jawira/the-lost-functions).
 
-**Alternative 3: use ternary operator**
+**Alternative 3: Use the Ternary Operator**
 
-Since PHP 8.1, `throw` keyword is an expression; I took advantage of this
-feature to write a one-liner `assert` equivalent:
+Since PHP 8.1, the `throw` keyword is an expression. I used this feature to
+write a one-liner `assert` equivalent:
 
 ```php
 $name = false;
 is_string($name) ?: throw new \Exception('Name must be string');
 ```
 
-This is the best alternative. It takes a single line of code, and it only uses
-vanilla PHP – no external library is involved – therefore, this is the solution
-I use every day in my projects.
+This is the best alternative. It uses only a single line of code with vanilla
+PHP, so no external library is involved. This is the solution I use daily in my
+projects.
 
-**Update 2026**
+**Update (2026)**
 
-It turns out that using single line ternary operators, as suggested in this
-post, is not compatible with Psalm.
+However, using single-line ternary operators, as suggested in this post, is not
+compatible with Psalm.
 
-The following two lines of code are not going to be analyzed correctly by Psalm.
+The following two lines of code will not be analyzed correctly by Psalm:
 
 ```php
 // Using ternary operator
@@ -95,15 +93,14 @@ is_numeric($number) ?: throw new Exception('Must provide a number.');
 $entity ?? throw new Exception('Variable must be defined.');
 ```
 
-The previous two lines of code will generate the following error:
+These lines will generate the following error:
 
-```Console
+```console
 INFO: MixedOperand - 14:10 - Left operand cannot be mixed
 ```
 
-As a solution the ternary operator can be replaced with the `or` operator.
-This will make your code compatible with Psalm and improve human readability as
-well:
+As a solution, the ternary operator can be replaced with the `or` operator. This
+makes your code compatible with Psalm and improves readability:
 
 ```php
 is_numeric($number) or throw new Exception('Must provide a number.');
@@ -113,6 +110,6 @@ Source: <https://github.com/vimeo/psalm/issues/10673>
 
 ## Conclusion
 
-Assert function is only meant to be used in a dev environment, and it will be
-very likely disabled in production. As a replacement you can use any of the
-alternatives I proposed, being the last one my preferred.
+The `assert` function is only meant to be used in a development environment and
+will likely be disabled in production. As a replacement, you can use any of the
+alternatives I proposed, with the last one being my favorite.
