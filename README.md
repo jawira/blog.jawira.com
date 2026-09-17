@@ -7,3 +7,7 @@
 This is automatically deployed with Github Pages.
 
 <https://github.com/jawira/blog.jawira.com>
+
+## Phing
+
+![phing buildfile](./build.svg)

@@ -41,8 +41,7 @@
     ]]>
   </adhoc-task>
 
-  <target name="jekyll:clean" description="Run Jekyll server">
-    <mkdir dir="_site"/>
+  <target name="jekyll:clean" description="Delete site dir">
     <delete dir="_site" failonerror="false"/>
   </target>
 
@@ -54,7 +53,7 @@
     </exec>
   </target>
 
-  <target name="requirements"
+  <target name="provisioning"
           description="Install Jekyll and dependencies to start developments, might require to use sudo.">
     <exec executable="apt" passthru="true" checkreturn="true">
       <arg value="install"/>
