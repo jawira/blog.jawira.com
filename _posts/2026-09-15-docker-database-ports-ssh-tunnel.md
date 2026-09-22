@@ -38,6 +38,8 @@ services:
 `ports` maps the container's port `5432` to port `5432` on the host. PhpStorm,
 pgAdmin, and any other clients can then connect to it directly.
 
+![Port mapping in Docker](/images/tunnel-diagram-1.svg)
+
 _Port mapping_ is very convenient, but it has two drawbacks:
 
 * A port can be used by only one process on the host, a second PostgreSQL
@@ -60,14 +62,20 @@ This solution is composed of two parts:
 
 ### Create the tunnel project
 
-Create a small project named `tunnel` with one `compose.yaml` file:
+As explained before, in this section we will create and configure an SSH tunnel.
+The following diagram displays what we want to achieve.
+
+![Port forwarding in Docker](/images/tunnel-diagram-2.svg)
+
+Create a new project named `tunnel` and create a `compose.yaml` file.
 
 ```text
 tunnel/
 └── compose.yaml
 ```
 
-This uses the LinuxServer OpenSSH image with its SSH-tunnel mod:
+This is the content of our Compose file, it uses the LinuxServer OpenSSH image
+with its SSH-tunnel mod:
 
 ```yaml
 # tunnel/compose.yaml
